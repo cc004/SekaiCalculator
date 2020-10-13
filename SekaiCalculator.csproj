@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9660BF2D-FF2A-4C94-A872-7658FF408171}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>SekaiCalculator</RootNamespace>
+    <AssemblyName>SekaiCalculator</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Music.cs" />
+    <Compile Include="MusicDifficulties.cs" />
+    <Compile Include="MusicInfo.cs" />
+    <Compile Include="MusicMeta.cs" />
+    <Compile Include="Note.cs" />
+    <Compile Include="NoteType.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SusParser.cs" />
+    <Compile Include="SusScoreData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="master_data.json" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="music_score\0001_01\easy.txt" />
+    <Content Include="music_score\0001_01\expert.txt" />
+    <Content Include="music_score\0001_01\hard.txt" />
+    <Content Include="music_score\0001_01\master.txt" />
+    <Content Include="music_score\0001_01\normal.txt" />
+    <Content Include="music_score\0002_01\easy.txt" />
+    <Content Include="music_score\0002_01\expert.txt" />
+    <Content Include="music_score\0002_01\hard.txt" />
+    <Content Include="music_score\0002_01\master.txt" />
+    <Content Include="music_score\0002_01\normal.txt" />
+    <Content Include="music_score\0003_01\easy.txt" />
+    <Content Include="music_score\0003_01\expert.txt" />
+    <Content Include="music_score\0003_01\hard.txt" />
+    <Content Include="music_score\0003_01\master.txt" />
+    <Content Include="music_score\0003_01\normal.txt" />
+    <Content Include="music_score\0006_01\easy.txt" />
+    <Content Include="music_score\0006_01\expert.txt" />
+    <Content Include="music_score\0006_01\hard.txt" />
+    <Content Include="music_score\0006_01\master.txt" />
+    <Content Include="music_score\0006_01\normal.txt" />
+    <Content Include="music_score\0010_01\easy.txt" />
+    <Content Include="music_score\0010_01\expert.txt" />
+    <Content Include="music_score\0010_01\hard.txt" />
+    <Content Include="music_score\0010_01\master.txt" />
+    <Content Include="music_score\0010_01\normal.txt" />
+    <Content Include="music_score\0013_01\easy.txt" />
+    <Content Include="music_score\0013_01\expert.txt" />
+    <Content Include="music_score\0013_01\hard.txt" />
+    <Content Include="music_score\0013_01\master.txt" />
+    <Content Include="music_score\0013_01\normal.txt" />
+    <Content Include="music_score\0018_01\easy.txt" />
+    <Content Include="music_score\0018_01\expert.txt" />
+    <Content Include="music_score\0018_01\hard.txt" />
+    <Content Include="music_score\0018_01\master.txt" />
+    <Content Include="music_score\0018_01\normal.txt" />
+    <Content Include="music_score\0019_01\easy.txt" />
+    <Content Include="music_score\0019_01\expert.txt" />
+    <Content Include="music_score\0019_01\hard.txt" />
+    <Content Include="music_score\0019_01\master.txt" />
+    <Content Include="music_score\0019_01\normal.txt" />
+    <Content Include="music_score\0021_01\easy.txt" />
+    <Content Include="music_score\0021_01\expert.txt" />
+    <Content Include="music_score\0021_01\hard.txt" />
+    <Content Include="music_score\0021_01\master.txt" />
+    <Content Include="music_score\0021_01\normal.txt" />
+    <Content Include="music_score\0022_01\easy.txt" />
+    <Content Include="music_score\0022_01\expert.txt" />
+    <Content Include="music_score\0022_01\hard.txt" />
+    <Content Include="music_score\0022_01\master.txt" />
+    <Content Include="music_score\0022_01\normal.txt" />
+    <Content Include="music_score\0026_01\easy.txt" />
+    <Content Include="music_score\0026_01\expert.txt" />
+    <Content Include="music_score\0026_01\hard.txt" />
+    <Content Include="music_score\0026_01\master.txt" />
+    <Content Include="music_score\0026_01\normal.txt" />
+    <Content Include="music_score\0027_01\easy.txt" />
+    <Content Include="music_score\0027_01\expert.txt" />
+    <Content Include="music_score\0027_01\hard.txt" />
+    <Content Include="music_score\0027_01\master.txt" />
+    <Content Include="music_score\0027_01\normal.txt" />
+    <Content Include="music_score\0028_01\easy.txt" />
+    <Content Include="music_score\0028_01\expert.txt" />
+    <Content Include="music_score\0028_01\hard.txt" />
+    <Content Include="music_score\0028_01\master.txt" />
+    <Content Include="music_score\0028_01\normal.txt" />
+    <Content Include="music_score\0038_01\easy.txt" />
+    <Content Include="music_score\0038_01\expert.txt" />
+    <Content Include="music_score\0038_01\hard.txt" />
+    <Content Include="music_score\0038_01\master.txt" />
+    <Content Include="music_score\0038_01\normal.txt" />
+    <Content Include="music_score\0041_01\easy.txt" />
+    <Content Include="music_score\0041_01\expert.txt" />
+    <Content Include="music_score\0041_01\hard.txt" />
+    <Content Include="music_score\0041_01\master.txt" />
+    <Content Include="music_score\0041_01\normal.txt" />
+    <Content Include="music_score\0043_01\easy.txt" />
+    <Content Include="music_score\0043_01\expert.txt" />
+    <Content Include="music_score\0043_01\hard.txt" />
+    <Content Include="music_score\0043_01\master.txt" />
+    <Content Include="music_score\0043_01\normal.txt" />
+    <Content Include="music_score\0044_01\easy.txt" />
+    <Content Include="music_score\0044_01\expert.txt" />
+    <Content Include="music_score\0044_01\hard.txt" />
+    <Content Include="music_score\0044_01\master.txt" />
+    <Content Include="music_score\0044_01\normal.txt" />
+    <Content Include="music_score\0047_01\easy.txt" />
+    <Content Include="music_score\0047_01\expert.txt" />
+    <Content Include="music_score\0047_01\hard.txt" />
+    <Content Include="music_score\0047_01\master.txt" />
+    <Content Include="music_score\0047_01\normal.txt" />
+    <Content Include="music_score\0048_01\east.txt" />
+    <Content Include="music_score\0048_01\easy.txt" />
+    <Content Include="music_score\0048_01\expert.txt" />
+    <Content Include="music_score\0048_01\hard.txt" />
+    <Content Include="music_score\0048_01\master.txt" />
+    <Content Include="music_score\0048_01\normal.txt" />
+    <Content Include="music_score\0049_01\easy.txt" />
+    <Content Include="music_score\0049_01\expert.txt" />
+    <Content Include="music_score\0049_01\hard.txt" />
+    <Content Include="music_score\0049_01\master.txt" />
+    <Content Include="music_score\0049_01\normal.txt" />
+    <Content Include="music_score\0050_01\easy.txt" />
+    <Content Include="music_score\0050_01\expert.txt" />
+    <Content Include="music_score\0050_01\hard.txt" />
+    <Content Include="music_score\0050_01\master.txt" />
+    <Content Include="music_score\0050_01\normal.txt" />
+    <Content Include="music_score\0051_01\easy.txt" />
+    <Content Include="music_score\0051_01\expert.txt" />
+    <Content Include="music_score\0051_01\hard.txt" />
+    <Content Include="music_score\0051_01\master.txt" />
+    <Content Include="music_score\0051_01\normal.txt" />
+    <Content Include="music_score\0054_01\easy.txt" />
+    <Content Include="music_score\0054_01\expert.txt" />
+    <Content Include="music_score\0054_01\hard.txt" />
+    <Content Include="music_score\0054_01\master.txt" />
+    <Content Include="music_score\0054_01\normal.txt" />
+    <Content Include="music_score\0057_01\easy.txt" />
+    <Content Include="music_score\0057_01\expert.txt" />
+    <Content Include="music_score\0057_01\hard.txt" />
+    <Content Include="music_score\0057_01\master.txt" />
+    <Content Include="music_score\0057_01\normal.txt" />
+    <Content Include="music_score\0060_01\easy.txt" />
+    <Content Include="music_score\0060_01\expert.txt" />
+    <Content Include="music_score\0060_01\hard.txt" />
+    <Content Include="music_score\0060_01\master.txt" />
+    <Content Include="music_score\0060_01\normal.txt" />
+    <Content Include="music_score\0063_01\easy.txt" />
+    <Content Include="music_score\0063_01\expert.txt" />
+    <Content Include="music_score\0063_01\hard.txt" />
+    <Content Include="music_score\0063_01\master.txt" />
+    <Content Include="music_score\0063_01\normal.txt" />
+    <Content Include="music_score\0066_01\easy.txt" />
+    <Content Include="music_score\0066_01\expert.txt" />
+    <Content Include="music_score\0066_01\hard.txt" />
+    <Content Include="music_score\0066_01\master.txt" />
+    <Content Include="music_score\0066_01\normal.txt" />
+    <Content Include="music_score\0067_01\easy.txt" />
+    <Content Include="music_score\0067_01\expert.txt" />
+    <Content Include="music_score\0067_01\hard.txt" />
+    <Content Include="music_score\0067_01\master.txt" />
+    <Content Include="music_score\0067_01\normal.txt" />
+    <Content Include="music_score\0068_01\easy.txt" />
+    <Content Include="music_score\0068_01\expert.txt" />
+    <Content Include="music_score\0068_01\hard.txt" />
+    <Content Include="music_score\0068_01\master.txt" />
+    <Content Include="music_score\0068_01\normal.txt" />
+    <Content Include="music_score\0069_01\easy.txt" />
+    <Content Include="music_score\0069_01\expert.txt" />
+    <Content Include="music_score\0069_01\hard.txt" />
+    <Content Include="music_score\0069_01\master.txt" />
+    <Content Include="music_score\0069_01\normal.txt" />
+    <Content Include="music_score\0071_01\easy.txt" />
+    <Content Include="music_score\0071_01\expert.txt" />
+    <Content Include="music_score\0071_01\hard.txt" />
+    <Content Include="music_score\0071_01\master.txt" />
+    <Content Include="music_score\0071_01\normal.txt" />
+    <Content Include="music_score\0073_01\easy.txt" />
+    <Content Include="music_score\0073_01\expert.txt" />
+    <Content Include="music_score\0073_01\hard.txt" />
+    <Content Include="music_score\0073_01\master.txt" />
+    <Content Include="music_score\0073_01\normal.txt" />
+    <Content Include="music_score\0076_01\easy.txt" />
+    <Content Include="music_score\0076_01\expert.txt" />
+    <Content Include="music_score\0076_01\hard.txt" />
+    <Content Include="music_score\0076_01\master.txt" />
+    <Content Include="music_score\0076_01\normal.txt" />
+    <Content Include="music_score\0077_01\easy.txt" />
+    <Content Include="music_score\0077_01\expert.txt" />
+    <Content Include="music_score\0077_01\hard.txt" />
+    <Content Include="music_score\0077_01\master.txt" />
+    <Content Include="music_score\0077_01\normal.txt" />
+    <Content Include="music_score\0078_01\easy.txt" />
+    <Content Include="music_score\0078_01\expert.txt" />
+    <Content Include="music_score\0078_01\hard.txt" />
+    <Content Include="music_score\0078_01\master.txt" />
+    <Content Include="music_score\0078_01\normal.txt" />
+    <Content Include="music_score\0082_01\easy.txt" />
+    <Content Include="music_score\0082_01\expert.txt" />
+    <Content Include="music_score\0082_01\hard.txt" />
+    <Content Include="music_score\0082_01\master.txt" />
+    <Content Include="music_score\0082_01\normal.txt" />
+    <Content Include="music_score\music_score\expert.txt" />
+    <Content Include="music_score\music_score\hard.txt" />
+    <Content Include="music_score\tutorial\easy.txt" />
+    <Content Include="music_score\tutorial\expert.txt" />
+    <Content Include="music_score\tutorial\hard.txt" />
+    <Content Include="music_score\tutorial\master.txt" />
+    <Content Include="music_score\tutorial\normal.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
