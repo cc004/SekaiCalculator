@@ -164,7 +164,10 @@ namespace SekaiCalculator
             int headTick = c.GetTickFromBarIndex(barIndex);
             int barTick = (int)(c.GetBarBeatsFromBarIndex(barIndex) * TicksPerBeat);
             var list = Enumerable.Range(0, data.Length / 2).Select(p => data.Substring(p * 2, 2)).ToList();
-            return list.Select((p, i) => Tuple.Create(headTick + (int)(barTick * ((double)i / list.Count)), p));
+            return list.Select((p, i) =>
+            {
+                return Tuple.Create(headTick + (int)(barTick * ((double)i / list.Count)), p);
+            });
         }
 
         protected int ConvertHex(char c)

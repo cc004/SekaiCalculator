@@ -5,6 +5,7 @@ using Newtonsoft.Json.Schema;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -42,13 +43,21 @@ namespace SekaiCalculator
 
             var flag = false;
             var lastfever = -1;
+            var notehash = new HashSet<Tuple<char, NotePosition>>();
 
-            var notes = data.ShortNotes.SelectMany(pair => pair.Value).Select(tuple =>
+            var notes = data.ShortNotes['1'].Select(tuple =>
             {
+                if (notehash.Contains(tuple))
+                {
+                    Console.WriteLine($"omitting duplicated short note for score: {filename}");
+                    return null;
+                }
+                notehash.Add(tuple);
                 var frame = getFrame(tuple.Item2.Tick);
                 if (tuple.Item2.LaneIndex == 0)
                     return new Note
                     {
+                        lane = tuple.GetHashCode(),
                         frame = frame,
                         tick = tuple.Item2.Tick,
                         type = NoteType.Skill
@@ -60,6 +69,7 @@ namespace SekaiCalculator
                     lastfever = tuple.Item2.Tick;
                     return new Note
                     {
+                        lane = tuple.GetHashCode(),
                         frame = frame,
                         tick = tuple.Item2.Tick,
                         type = flag2 ? NoteType.FeverStart : NoteType.FeverBegin
@@ -69,84 +79,116 @@ namespace SekaiCalculator
                     lastfever = -1;
                 return new Note
                 {
-                    weight = tuple.Item1 - '0',
+                    lane = tuple.Item2.LaneIndex,
                     frame = frame,
                     tick = tuple.Item2.Tick,
-                    type = NoteType.Normal
+                    type = (tuple.Item1 == '2' ? NoteType.Critical : NoteType.Normal) |
+                           (data.ShortNotes['5'].Any(t => t.Item2.Tick == tuple.Item2.Tick && t.Item2.LaneIndex == tuple.Item2.LaneIndex) ? NoteType.Flick : NoteType.Normal)
                 };
-            }).ToArray();
+            }).Where(n => n != null).ToArray();
 
-            var notes2 = new List<Note>();
+            var notedict = new Dictionary<Tuple<int, int>, Note>();
+            var fnoteset = new HashSet<Tuple<char, NotePosition>>();
+
+            foreach (var note in notes)
+            {
+                var key = new Tuple<int, int>(note.tick, note.lane);
+                notedict.Add(key, note);
+            }
 
             foreach (var l in data.LongNotes.SelectMany(pair => pair.Value))
             {
                 var ln = l.Count;
                 var lnote = l[ln - 1];
-                int ftick = l[0].Item2.Tick, ltick = lnote.Item2.Tick;
-                var flag2 = notes.Any(n => n.tick == ftick && n.weight == 2);
-
-                if (flag2) notes = notes.Where(n => !(n.tick == ftick && n.weight == 2)).ToArray();
-
-                notes2.Add(new Note
+                var fnote = l[0];
+                if (fnoteset.Contains(fnote))
                 {
-                    weight = flag2 ? 2 : 1,
-                    frame = getFrame(ftick),
-                    tick = ftick,
-                    type = NoteType.Normal
-                });
-                notes2.Add(new Note
+                    Console.WriteLine($"omitting duplicated long note for score: {filename}");
+                    continue;
+                }
+                fnoteset.Add(fnote);
+                var fattr = NoteType.Normal;
+                if (notedict.TryGetValue(new Tuple<int, int>(fnote.Item2.Tick, fnote.Item2.LaneIndex), out var note3))
+                    fattr = note3.type;
+
+                var lattr = NoteType.Normal;
+                var lkey = new Tuple<int, int>(lnote.Item2.Tick, lnote.Item2.LaneIndex);
+
+                if (notedict.TryGetValue(lkey, out var note2))
                 {
-                    weight = !flag2 ? 1 : lnote.Item1 == '3' ? 3 : 2,
-                    frame = getFrame(ltick),
-                    tick = ltick,
-                    type = NoteType.Normal
+                    lattr = note2.type;
+                    notedict.Remove(lkey);
+                }
+
+                notedict.Add(lkey, new Note
+                {
+                    lane = lnote.Item2.LaneIndex,
+                    frame = getFrame(lnote.Item2.Tick),
+                    tick = lnote.Item2.Tick,
+                    type = (fattr & NoteType.Critical) | lattr |
+                        (data.ShortNotes['5'].Any(t => t.Item2.Tick == lnote.Item2.Tick && t.Item2.LaneIndex == lnote.Item2.LaneIndex) ? NoteType.Flick : NoteType.Normal)
                 });
 
-                for (i = 1;i < ln - 1; ++i)
+                for (i = 0;i < ln - 1; ++i)
                 {
                     var note = l[i];
-                    if (note.Item1 != '3') continue;
+                    var key = new Tuple<int, int>(note.Item2.Tick, note.Item2.LaneIndex);
 
-                    notes2.Add(new Note
+                    if (notedict.ContainsKey(key)) notedict.Remove(key);
+                    if (note.Item1 == '5') continue;
+
+                    notedict.Add(key, new Note
                     {
-                        weight = flag2 ? 0.2f : 0.1f,
+                        lane = note.Item2.LaneIndex,
                         frame = getFrame(note.Item2.Tick),
                         tick = note.Item2.Tick,
-                        type = NoteType.Normal
+                        type = (fattr & NoteType.Critical) | (i == 0 ? NoteType.Long : NoteType.Mid)
                     });
                 }
+
                 var tpb = data.TicksPerBeat / 2;
 
-                for (i = (ftick / tpb + 1) * tpb; i < ltick; i += tpb)
-                    notes2.Add(new Note
+                for (i = (fnote.Item2.Tick / tpb + 1) * tpb; i < lnote.Item2.Tick; i += tpb)
+                    notedict.Add(new Tuple<int, int>(i, fnote.GetHashCode()), new Note
                     {
-                        weight = 0.1f,
                         frame = getFrame(i),
                         tick = i,
-                        type = NoteType.Normal
+                        type = NoteType.Auto
                     });
             } 
+            /*
+            Console.Clear();
+            Console.WriteLine(filename);
+            int combo = 0;
+            foreach (var note in notedict.Select(n => n.Value).OrderBy(n => n.tick))
+            {
+                Console.WriteLine($"tick={note.tick},type={note.type},lane={note.lane},combo={combo += ((note.type & NoteType.Skill) == 0 ? 1 : 0 )}");
+            }
+            */
+            notes = notedict.Select(pair => pair.Value).ToArray();
 
-            notes = notes.Concat(notes2).OrderBy(n => n.tick).ToArray();
-            var basescore = 4 / notes.Sum(n => n.weight) * (1 + (0.005f * (diff.playLevel - 5)));
+
+            var basescore = 4 / notes.Sum(n => n.Weight) * (1 + (0.005f * (diff.playLevel - 5)));
             var skills = notes.Where(n => n.type == NoteType.Skill).Select(n => (int)(n.frame));
             var fevertick = notes.Single(n => n.type == NoteType.FeverStart).tick;
             var feverlast = diff.noteCount / 10;
-            notes = notes.Where(n => n.type == NoteType.Normal).ToArray();
+            var snotes = notes.Where(n => (n.type & NoteType.Skill) == 0).Select(n => new ScoreNote(n)).ToArray();
+            if (snotes.Length != diff.noteCount) throw new Exception();
 
             for (i = 0; notes[i].tick < fevertick; ++i) ;
             for (; feverlast > 0; --feverlast)
-                notes[i++].isfever = true;
+                snotes[i++].isfever = true;
 
-            var nl = notes.Length;
+            var nl = snotes.Length;
 
             for (i = 0; i < nl; ++i)
-                notes[i].weight *= ((i / 100) * 0.01f + 1);
-            var rs = notes.Sum(n => (n.isfever ? 1.5f : 1) * n.weight) * basescore;
-            var rss = notes.Sum(n => (n.isfever ? 2f : 1) * n.weight) * basescore;
-            var sr = notes.Select(n => (n.isfever ? 1.5f : 1) * skills.Sum(s => s <= n.frame && s + skillframe > n.frame ? n.weight : 0)).Sum() * basescore;
-            var srs = notes.Select(n => (n.isfever ? 1.5f : 1) * skills.Sum(s => s <= n.frame && s + skillframe > n.frame ? n.weight : 0)).Sum() * basescore;
-            var le = notes.Max(n => n.frame / 60);
+                snotes[i].weight *= ((i / 100) * 0.01f + 1);
+
+            var rs = snotes.Sum(n => (n.isfever ? 1.5f : 1) * n.weight) * basescore;
+            var rss = snotes.Sum(n => (n.isfever ? 2f : 1) * n.weight) * basescore;
+            var sr = snotes.Select(n => (n.isfever ? 1.5f : 1) * skills.Sum(s => s <= n.frame && s + skillframe > n.frame ? n.weight : 0)).Sum() * basescore;
+            var srs = snotes.Select(n => (n.isfever ? 1.5f : 1) * skills.Sum(s => s <= n.frame && s + skillframe > n.frame ? n.weight : 0)).Sum() * basescore;
+            var le = snotes.Max(n => n.frame / 60);
             return new float[] { rs, rss, sr, srs , le};
         }
 
@@ -159,19 +201,26 @@ namespace SekaiCalculator
             foreach (var music in musics)
                 foreach (var diff in music.musicDifficulties)
                 {
-                    var arr = calcScore($@"music_score\{music.id:d4}_01\{diff.musicDifficulty}.txt", diff);
-                    metas.Add(new MusicMeta
+                    try
                     {
-                        difficulty = diff.musicDifficulty,
-                        noteCount = diff.noteCount,
-                        playLevel = diff.playLevel,
-                        title = music.music.title,
-                        relativeScore = arr[0],
-                        relativeScoreS = arr[1],
-                        skillReliance = arr[2],
-                        skillRelianceS = arr[3],
-                        length = (int)arr[4]
-                    });
+                        var arr = calcScore($@"music_score\{music.id:d4}_01\{diff.musicDifficulty}.txt", diff);
+                        metas.Add(new MusicMeta
+                        {
+                            difficulty = diff.musicDifficulty,
+                            noteCount = diff.noteCount,
+                            playLevel = diff.playLevel,
+                            title = music.music.title,
+                            relativeScore = arr[0],
+                            relativeScoreS = arr[1],
+                            skillReliance = arr[2],
+                            skillRelianceS = arr[3],
+                            length = (int)arr[4]
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
                 }
 
             File.WriteAllText("music_meta.json", JsonConvert.SerializeObject(metas, Formatting.Indented));
